@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>찾아가는 금융교실 신청 | 경향신문 열린경제교육프로젝트</title>
+<meta name="description" content="금융 전문 강사가 학교·기관을 직접 찾아가는 무료 금융교육 신청 페이지입니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14325c; --navy-2:#1f4a85; --teal:#0f8a7e; --teal-soft:#e6f4f2;
+    --ink:#1b2430; --sub:#5b6675; --line:#dfe4ea; --bg:#f4f6f9; --white:#fff;
+    --warn:#b4541a; --warn-soft:#fdf1e8; --err:#c0392b; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--navy-2)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+  /* 상단 */
+  header.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 60%,var(--teal) 140%);color:#fff;padding:44px 0 72px}
+  .eyebrow{display:inline-block;font-size:13px;letter-spacing:.04em;background:rgba(255,255,255,.14);padding:4px 12px;border-radius:999px;margin-bottom:14px}
+  h1{font-size:clamp(26px,5vw,36px);margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
+  .lead{margin:0;font-size:16px;opacity:.92;max-width:560px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .badge{font-size:13px;background:#fff;color:var(--navy);padding:5px 12px;border-radius:999px;font-weight:600}
+
+  /* 카드 */
+  .card{background:var(--white);border-radius:var(--radius);box-shadow:0 6px 24px rgba(20,50,92,.08);padding:28px;margin-bottom:20px}
+  .card.lift{margin-top:-44px}
+  .info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 20px}
+  .info-grid div{font-size:15px}
+  .info-grid b{display:block;font-size:13px;color:var(--sub);font-weight:600;margin-bottom:2px}
+  .notice{margin-top:18px;padding:12px 14px;background:var(--teal-soft);border-radius:10px;font-size:14px;color:#0b5f57}
+
+  /* 폼 */
+  .sec-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;margin:0 0 18px}
+  .sec-title .num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:14px;display:grid;place-items:center}
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  label.lbl{display:block;font-weight:600;font-size:15px;margin-bottom:6px}
+  .req{color:var(--err);margin-left:3px}
+  .hint{font-size:13px;color:var(--sub);margin-top:5px}
+  input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],select,textarea{
+    width:100%;font:inherit;font-size:15px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border .15s, box-shadow .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy-2);box-shadow:0 0 0 3px rgba(31,74,133,.15)}
+  textarea{min-height:96px;resize:vertical}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row-3{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+  .addr{display:grid;grid-template-columns:140px 1fr;gap:8px}
+  .btn-sub{font:inherit;font-size:14px;border:1px solid var(--navy-2);color:var(--navy-2);background:#fff;border-radius:10px;cursor:pointer;padding:0 12px}
+  .btn-sub:hover{background:#f0f4fa}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{position:relative}
+  .chip input{position:absolute;opacity:0;pointer-events:none}
+  .chip span{display:inline-block;padding:9px 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;cursor:pointer;background:#fff;transition:all .15s;user-select:none}
+  .chip input:checked + span{background:var(--navy);border-color:var(--navy);color:#fff}
+  .chip input:focus-visible + span{box-shadow:0 0 0 3px rgba(31,74,133,.25)}
+
+  .pref{border:1px dashed var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+  .pref-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px}
+
+  .warn{display:none;margin-top:8px;padding:10px 12px;background:var(--warn-soft);color:var(--warn);border-radius:8px;font-size:13px}
+  .warn.show{display:block}
+
+  .consent{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  .consent-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer}
+  .consent-head input{width:19px;height:19px;accent-color:var(--navy)}
+  .consent-head .t{flex:1;font-size:15px;font-weight:600}
+  .consent-head .tag{font-size:12px;padding:2px 8px;border-radius:999px;background:#fdecea;color:var(--err)}
+  .consent-head .tag.opt{background:#eef1f5;color:var(--sub)}
+  details summary{list-style:none;cursor:pointer;font-size:13px;color:var(--sub);padding:0 14px 12px 43px}
+  details summary::-webkit-details-marker{display:none}
+  .consent-body{font-size:13px;color:var(--sub);padding:0 14px 14px 43px}
+  .consent-body table{width:100%;border-collapse:collapse;margin-top:4px}
+  .consent-body th,.consent-body td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  .consent-body th{background:#f7f9fb;width:30%;font-weight:600}
+
+  .err-msg{color:var(--err);font-size:13px;margin-top:5px;display:none}
+  .invalid .err-msg{display:block}
+  .invalid input,.invalid select,.invalid textarea{border-color:var(--err)}
+
+  .submit-area{text-align:center;padding:8px 0 10px}
+  .btn-main{font:inherit;font-size:17px;font-weight:700;color:#fff;background:var(--navy);border:none;border-radius:12px;padding:16px 48px;cursor:pointer;width:100%;max-width:360px;transition:background .15s}
+  .btn-main:hover{background:var(--navy-2)}
+  .btn-main:disabled{background:#8a9ab0;cursor:wait}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+  /* 완료 화면 */
+  .done{display:none;text-align:center;padding:40px 28px}
+  .done .ic{width:64px;height:64px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center;font-size:32px;margin:0 auto 16px}
+  .done h2{margin:0 0 8px;font-size:24px}
+  .receipt{display:inline-block;margin:16px 0;padding:12px 22px;border-radius:12px;background:var(--bg);font-size:20px;font-weight:800;letter-spacing:.04em;color:var(--navy)}
+  .done p{color:var(--sub);margin:6px 0}
+
+  .closed{display:none;text-align:center;padding:36px 28px}
+
+  footer{padding:28px 0 48px;font-size:13px;color:var(--sub)}
+  footer .hosts{font-weight:600;color:var(--ink);margin-bottom:6px}
+
+  @media (max-width:600px){
+    .card{padding:22px 18px}
+    .info-grid,.row,.row-3{grid-template-columns:1fr}
+    .addr{grid-template-columns:1fr 110px}
+    .addr .full{grid-column:1/-1}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">경향신문 열린경제교육프로젝트</span>
+    <h1>찾아가는 금융교실 신청</h1>
+    <p class="lead">금융 전문 강사진이 학교와 기관을 직접 찾아가, 실생활에 꼭 필요한 신용관리와 금융지식을 눈높이에 맞춰 알기 쉽게 강의합니다.</p>
+    <div class="badges">
+      <span class="badge">전액 무료</span>
+      <span class="badge">전국 어디나</span>
+      <span class="badge">비대면 교육 가능</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 안내 -->
+  <section class="card lift" aria-label="교육 안내">
+    <div class="info-grid">
+      <div><b>신청 대상</b>초·중·고교, 대학, 복지시설, 자활훈련기관, 기업·산업체 등</div>
+      <div><b>교육 방식</b>강사 직접 방문 또는 실시간 비대면</div>
+      <div><b>교육 시간</b>1~2시간 이내 (협의 가능)</div>
+      <div><b>교육 인원</b>최소 20명 (특수한 경우 협의)</div>
+      <div><b>신청 기간</b><span id="deadlineText">2026년 11월 30일까지</span></div>
+      <div><b>제공</b>강의 및 교육 자료 무료</div>
+    </div>
+    <div class="notice">희망 교육일 <b>2주 전</b>까지 신청해 주세요. 신청 내용을 확인한 뒤 담당자가 연락드려 일정을 확정합니다.</div>
+  </section>
+
+  <!-- 마감 안내 -->
+  <section class="card closed" id="closedBox">
+    <h2>신청이 마감되었습니다</h2>
+    <p>올해 찾아가는 금융교실 신청은 마감되었습니다. 문의는 아래 연락처로 부탁드립니다.</p>
+  </section>
+
+  <form id="applyForm" novalidate>
+    <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <!-- 1. 기관 정보 -->
+    <section class="card">
+      <h2 class="sec-title"><span class="num">1</span>기관 정보</h2>
+
+      <div class="field" data-req>
+        <label class="lbl" for="org">기관명<span class="req">*</span></label>
+        <input type="text" id="org" name="기관명" placeholder="예) ○○초등학교, ○○지역아동센터">
+        <div class="err-msg">기관명을 입력해 주세요.</div>
+      </div>
+
+      <div class="field" data-req data-group="기관유형">
+        <span class="lbl">기관 유형<span class="req">*</span></span>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="기관유형" value="초등학교"><span>초등학교</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="중학교"><span>중학교</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="고등학교"><span>고등학교</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="대학교"><span>대학교</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="복지시설"><span>복지시설</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="자활훈련기관"><span>자활훈련기관</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="기업·산업체"><span>기업·산업체</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="군부대"><span>군부대</span></label>
+          <label class="chip"><input type="radio" name="기관유형" value="기타"><span>기타</span></label>
+        </div>
+        <div class="err-msg">기관 유형을 선택해 주세요.</div>
+      </div>
+
+      <div class="field" data-req>
+        <label class="lbl" for="addr1">주소<span class="req">*</span></label>
+        <div class="addr">
+          <input type="text" id="zip" name="우편번호" placeholder="우편번호" readonly>
+          <button type="button" class="btn-sub" id="findAddr">주소 검색</button>
+          <input type="text" id="addr1" name="주소" class="full" placeholder="주소 검색 버튼을 눌러 주세요" readonly>
+          <input type="text" id="addr2" name="상세주소" class="full" placeholder="상세주소 (건물명, 층 등)">
+        </div>
+        <div class="err-msg">주소를 검색해 입력해 주세요.</div>
+      </div>
+    </section>
+
+    <!-- 2. 교육 정보 -->
+    <section class="card">
+      <h2 class="sec-title"><span class="num">2</span>교육 정보</h2>
+
+      <div class="field" data-req>
+        <label class="lbl" for="target">교육 대상<span class="req">*</span></label>
+        <div class="row-3">
+          <select id="target" name="교육대상">
+            <option value="">선택해 주세요</option>
+            <option>초등학생</option>
+            <option>중학생</option>
+            <option>고등학생</option>
+            <option>대학생</option>
+            <option>사회초년생·청년</option>
+            <option>성인(일반)</option>
+            <option>어르신</option>
+            <option>장병</option>
+            <option>기타</option>
+          </select>
+          <input type="text" id="targetDetail" name="대상상세" placeholder="학년·연령 등 (예: 3학년)">
+        </div>
+        <div class="err-msg">교육 대상을 선택해 주세요.</div>
+      </div>
+
+      <div class="row">
+        <div class="field" data-req>
+          <label class="lbl" for="count">예상 수강 인원<span class="req">*</span></label>
+          <input type="number" id="count" name="예상인원" min="1" inputmode="numeric" placeholder="숫자만 입력 (명)">
+          <div class="err-msg">인원을 숫자로 입력해 주세요.</div>
+          <div class="warn" id="countWarn">실시간 교육은 최소 20명 이상일 때 진행합니다. 20명 미만이면 기타 요청사항에 사정을 적어 주시면 신용회복위원회와 협의해 안내드립니다.</div>
+        </div>
+        <div class="field" data-req data-group="교육방식">
+          <span class="lbl">교육 방식<span class="req">*</span></span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="교육방식" value="방문(대면)"><span>방문(대면)</span></label>
+            <label class="chip"><input type="radio" name="교육방식" value="비대면(실시간)"><span>비대면(실시간)</span></label>
+          </div>
+          <div class="err-msg">교육 방식을 선택해 주세요.</div>
+        </div>
+      </div>
+
+      <div class="field" id="onlineField" style="display:none">
+        <label class="lbl" for="platform">비대면 플랫폼</label>
+        <select id="platform" name="비대면플랫폼">
+          <option value="">선택해 주세요</option>
+          <option>Zoom</option><option>Google Meet</option><option>Microsoft Teams</option><option>Webex</option><option>기관 자체 플랫폼</option><option>협의 필요</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <span class="lbl">희망 교육 일시<span class="req">*</span></span>
+        <div class="pref" data-req id="pref1Box">
+          <div class="pref-title">1지망</div>
+          <div class="row">
+            <input type="date" id="date1" name="1지망일자" aria-label="1지망 날짜">
+            <select id="time1" name="1지망시간" aria-label="1지망 시간"></select>
+          </div>
+          <div class="err-msg">1지망 날짜와 시간을 선택해 주세요.</div>
+        </div>
+        <div class="pref">
+          <div class="pref-title">2지망 <span style="font-weight:400;color:var(--sub)">(선택)</span></div>
+          <div class="row">
+            <input type="date" id="date2" name="2지망일자" aria-label="2지망 날짜">
+            <select id="time2" name="2지망시간" aria-label="2지망 시간"></select>
+          </div>
+        </div>
+        <div class="hint" id="dateHint">오늘로부터 2주 뒤 날짜부터 선택할 수 있습니다.</div>
+      </div>
+
+      <div class="field" data-req data-group="교육시간">
+        <span class="lbl">교육 시간<span class="req">*</span></span>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="교육시간" value="1시간"><span>1시간</span></label>
+          <label class="chip"><input type="radio" name="교육시간" value="2시간"><span>2시간</span></label>
+          <label class="chip"><input type="radio" name="교육시간" value="협의"><span>협의</span></label>
+        </div>
+        <div class="err-msg">교육 시간을 선택해 주세요.</div>
+      </div>
+
+      <div class="field">
+        <span class="lbl">관심 주제 <span style="font-weight:400;color:var(--sub);font-size:13px">(여러 개 선택 가능)</span></span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="관심주제" value="신용관리"><span>신용관리</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="금융사기 예방"><span>금융사기 예방</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="용돈·소비관리"><span>용돈·소비관리</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="저축·투자 기초"><span>저축·투자 기초</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="대출·부채관리"><span>대출·부채관리</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="사회초년생 재무설계"><span>사회초년생 재무설계</span></label>
+          <label class="chip"><input type="checkbox" name="관심주제" value="강사에게 맡김"><span>강사에게 맡김</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 담당자 -->
+    <section class="card">
+      <h2 class="sec-title"><span class="num">3</span>담당자 정보</h2>
+      <div class="row">
+        <div class="field" data-req>
+          <label class="lbl" for="name">담당자 이름<span class="req">*</span></label>
+          <input type="text" id="name" name="담당자" autocomplete="name">
+          <div class="err-msg">담당자 이름을 입력해 주세요.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="dept">부서·직위</label>
+          <input type="text" id="dept" name="부서직위" placeholder="예) 교무부 / 사회복지사">
+        </div>
+      </div>
+      <div class="field" data-req>
+        <label class="lbl" for="email">이메일<span class="req">*</span></label>
+        <input type="email" id="email" name="이메일" autocomplete="email" placeholder="example@school.kr">
+        <div class="err-msg">올바른 이메일 주소를 입력해 주세요.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="lbl" for="tel">유선전화</label>
+          <input type="tel" id="tel" name="유선전화" placeholder="02-0000-0000">
+        </div>
+        <div class="field" data-req>
+          <label class="lbl" for="mobile">휴대전화<span class="req">*</span></label>
+          <input type="tel" id="mobile" name="휴대전화" autocomplete="tel" placeholder="010-0000-0000">
+          <div class="err-msg">휴대전화 번호를 확인해 주세요.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="memo">기타 요청사항</label>
+        <textarea id="memo" name="기타요청" placeholder="교육 장소 여건(빔프로젝터 유무 등), 대상 특성, 원하는 내용 등을 자유롭게 적어 주세요."></textarea>
+      </div>
+    </section>
+
+    <!-- 4. 동의 -->
+    <section class="card">
+      <h2 class="sec-title"><span class="num">4</span>개인정보 동의</h2>
+
+      <div class="consent" data-req data-consent>
+        <label class="consent-head"><input type="checkbox" name="동의_수집이용" value="동의"><span class="t">개인정보 수집·이용 동의</span><span class="tag">필수</span></label>
+        <details><summary>내용 보기 ▾</summary>
+          <div class="consent-body"><table>
+            <tr><th>수집 항목</th><td>담당자 이름, 부서·직위, 이메일, 유선전화, 휴대전화</td></tr>
+            <tr><th>이용 목적</th><td>찾아가는 금융교실 신청 접수, 일정 협의 및 교육 운영 안내</td></tr>
+            <tr><th>보유 기간</th><td>교육 종료 후 1년 (이후 지체 없이 파기)</td></tr>
+          </table>동의를 거부할 수 있으나, 거부 시 교육 신청이 제한됩니다.</div>
+        </details>
+        <div class="err-msg" style="padding:0 14px 12px">필수 동의 항목입니다.</div>
+      </div>
+
+      <div class="consent" data-req data-consent>
+        <label class="consent-head"><input type="checkbox" name="동의_제3자제공" value="동의"><span class="t">개인정보 제3자 제공 동의</span><span class="tag">필수</span></label>
+        <details><summary>내용 보기 ▾</summary>
+          <div class="consent-body"><table>
+            <tr><th>제공받는 자</th><td>신용회복위원회 (신용교육원)</td></tr>
+            <tr><th>제공 항목</th><td>기관명, 주소, 교육 정보, 담당자 이름·연락처·이메일</td></tr>
+            <tr><th>제공 목적</th><td>강사 배정 및 교육 일정 확정</td></tr>
+            <tr><th>보유 기간</th><td>교육 종료 후 1년</td></tr>
+          </table>동의를 거부할 수 있으나, 거부 시 교육 진행이 어렵습니다.</div>
+        </details>
+        <div class="err-msg" style="padding:0 14px 12px">필수 동의 항목입니다.</div>
+      </div>
+
+      <div class="consent">
+        <label class="consent-head"><input type="checkbox" name="동의_소식수신" value="동의"><span class="t">교육·행사 소식 수신 동의</span><span class="tag opt">선택</span></label>
+        <details><summary>내용 보기 ▾</summary>
+          <div class="consent-body">경향신문 열린경제교육프로젝트의 금융교육, 금융교육대상 공모, 콘퍼런스 등 소식을 이메일로 안내받습니다. 동의하지 않아도 신청에는 영향이 없습니다.</div>
+        </details>
+      </div>
+    </section>
+
+    <div class="submit-area">
+      <button type="submit" class="btn-main" id="submitBtn">신청하기</button>
+      <div class="hint" id="submitHint" style="margin-top:10px"></div>
+    </div>
+  </form>
+
+  <!-- 완료 -->
+  <section class="card done" id="doneBox" aria-live="polite">
+    <div class="ic">✓</div>
+    <h2>신청이 접수되었습니다</h2>
+    <p>접수번호</p>
+    <div class="receipt" id="receiptNo">-</div>
+    <p>입력하신 이메일로 접수 확인 메일을 보내드렸습니다.</p>
+    <p>내용 확인 후 담당자가 연락드려 교육 일정을 확정합니다.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="hosts">주최 경향신문사 · 금융감독원 · 신용회복위원회</div>
+    문의: 열린경제교육프로젝트 담당자 02-3701-1601~2 · 신용회복위원회 02-750-1293
+  </div>
+</footer>
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+/* ===== 설정: 여기만 바꾸면 됩니다 ===== */
+const CONFIG = {
+  SCRIPT_URL: "여기에_Apps_Script_웹앱_주소를_붙여넣으세요",
+  FORM_ID: "finance-class",        // 시트 탭 이름이 됩니다
+  DEADLINE: "2026-11-30",          // 이 날짜가 지나면 신청 마감 화면 표시 (비우면 상시 접수)
+  LEAD_DAYS: 14,                   // 교육일 며칠 전까지 신청받을지
+  TIMES: ["09:00","10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","협의"]
+};
+/* ===================================== */
+
+const $ = s => document.querySelector(s);
+const form = $("#applyForm");
+
+// 마감 처리
+(function(){
+  if (!CONFIG.DEADLINE) { $("#deadlineText").textContent = "상시 접수"; return; }
+  const d = new Date(CONFIG.DEADLINE + "T23:59:59+09:00");
+  $("#deadlineText").textContent = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일까지`;
+  if (new Date() > d) { form.style.display = "none"; $("#closedBox").style.display = "block"; }
+})();
+
+// 시간 선택지
+["#time1","#time2"].forEach(sel => {
+  const el = $(sel);
+  el.innerHTML = '<option value="">시간 선택</option>' + CONFIG.TIMES.map(t => `<option>${t}</option>`).join("");
+});
+
+// 날짜 최소값 (오늘 + LEAD_DAYS)
+(function(){
+  const min = new Date(); min.setDate(min.getDate() + CONFIG.LEAD_DAYS);
+  const iso = new Date(min.getTime() - min.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  $("#date1").min = iso; $("#date2").min = iso;
+  if (CONFIG.DEADLINE) { /* 교육일은 마감 이후도 가능하므로 max 없음 */ }
+  $("#dateHint").textContent = `${min.getMonth()+1}월 ${min.getDate()}일 이후 날짜부터 선택할 수 있습니다. (교육일 ${CONFIG.LEAD_DAYS}일 전까지 신청)`;
+})();
+
+// 주소 검색
+$("#findAddr").addEventListener("click", openPostcode);
+$("#addr1").addEventListener("click", openPostcode);
+function openPostcode(){
+  new daum.Postcode({ oncomplete: data => {
+    $("#zip").value = data.zonecode;
+    $("#addr1").value = data.roadAddress || data.jibunAddress;
+    $("#addr2").focus();
+    $("#addr1").closest(".field").classList.remove("invalid");
+  }}).open();
+}
+
+// 인원 경고
+$("#count").addEventListener("input", e => {
+  const n = parseInt(e.target.value, 10);
+  $("#countWarn").classList.toggle("show", n > 0 && n < 20);
+});
+
+// 비대면 선택 시 플랫폼 문항
+form.querySelectorAll('input[name="교육방식"]').forEach(r => r.addEventListener("change", () => {
+  $("#onlineField").style.display = form.교육방식.value.startsWith("비대면") ? "block" : "none";
+}));
+
+// 전화번호 자동 하이픈
+["#tel","#mobile"].forEach(sel => $(sel).addEventListener("input", e => {
+  let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+  if (v.startsWith("02")) v = v.replace(/^(02)(\d{3,4})?(\d{4})?$/, (m,a,b,c) => [a,b,c].filter(Boolean).join("-"));
+  else v = v.replace(/^(\d{3})(\d{3,4})?(\d{4})?$/, (m,a,b,c) => [a,b,c].filter(Boolean).join("-"));
+  e.target.value = v;
+}));
+
+// 입력 시 오류 표시 지우기
+form.addEventListener("input", e => { const f = e.target.closest(".field,.pref,.consent"); if (f) f.classList.remove("invalid"); });
+form.addEventListener("change", e => { const f = e.target.closest(".field,.pref,.consent"); if (f) f.classList.remove("invalid"); });
+
+function validate(){
+  let firstBad = null;
+  const mark = (el, bad) => { el.classList.toggle("invalid", bad); if (bad && !firstBad) firstBad = el; };
+
+  mark($("#org").closest(".field"), !$("#org").value.trim());
+  mark(form.querySelector('[data-group="기관유형"]'), !form.기관유형.value);
+  mark($("#addr1").closest(".field"), !$("#addr1").value.trim());
+  mark($("#target").closest(".field"), !$("#target").value);
+  const n = parseInt($("#count").value, 10);
+  mark($("#count").closest(".field"), !(n > 0));
+  mark(form.querySelector('[data-group="교육방식"]'), !form.교육방식.value);
+  mark($("#pref1Box"), !$("#date1").value || !$("#time1").value || ($("#date1").value < $("#date1").min));
+  mark(form.querySelector('[data-group="교육시간"]'), !form.교육시간.value);
+  mark($("#name").closest(".field"), !$("#name").value.trim());
+  mark($("#email").closest(".field"), !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#email").value.trim()));
+  mark($("#mobile").closest(".field"), !/^01\d-\d{3,4}-\d{4}$/.test($("#mobile").value.trim()));
+  form.querySelectorAll("[data-consent]").forEach(c => mark(c, !c.querySelector("input").checked));
+
+  if (firstBad) firstBad.scrollIntoView({ behavior: "smooth", block: "center" });
+  return !firstBad;
+}
+
+function collect(){
+  const data = {};
+  new FormData(form).forEach((v, k) => {
+    if (k === "website") return;
+    data[k] = data[k] ? data[k] + ", " + v : v;
+  });
+  ["동의_수집이용","동의_제3자제공","동의_소식수신"].forEach(k => { if (!data[k]) data[k] = "미동의"; });
+  return data;
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  if (form.website.value) return;              // 스팸 봇 차단
+  if (!validate()) { $("#submitHint").textContent = "표시된 항목을 확인해 주세요."; return; }
+
+  const btn = $("#submitBtn");
+  btn.disabled = true; btn.textContent = "접수 중입니다…"; $("#submitHint").textContent = "";
+
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },   // CORS 사전요청 없이 전송
+      body: JSON.stringify({ formId: CONFIG.FORM_ID, data: collect() })
+    });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || "접수 실패");
+    form.style.display = "none";
+    $("#receiptNo").textContent = out.receiptNo;
+    $("#doneBox").style.display = "block";
+    window.scrollTo({ top: $("#doneBox").offsetTop - 20, behavior: "smooth" });
+  } catch (err) {
+    btn.disabled = false; btn.textContent = "신청하기";
+    $("#submitHint").textContent = "접수 중 문제가 생겼습니다. 잠시 후 다시 시도하시거나 02-3701-1601로 연락 주세요.";
+    console.error(err);
+  }
+});
+</script>
+</body>
+</html>
