@@ -5,6 +5,7 @@
 ```
 kh-forms/
 ├─ finance-class/index.html   찾아가는 금융교실 신청
+├─ groupware/index.html       문화사업국 그룹웨어 (Apps Script 웹앱을 배너 없이 띄우는 껍데기)
 ├─ (다음 설문)/index.html
 └─ apps-script/Code.gs        구글시트 접수 창구 (GitHub에는 참고용)
 ```

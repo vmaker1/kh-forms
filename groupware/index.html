@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>경향 문화사업국 그룹웨어</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#f5f7fa}
+  #app{position:fixed;inset:0;width:100%;height:100%;border:0;display:block}
+  #fallback{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif;font-size:14px;color:#6b7484;text-align:center;line-height:1.7}
+  #fallback a{color:#2f6be8}
+</style>
+</head>
+<body>
+<!-- 그룹웨어가 뜨기 전 잠깐 보이는 안내 (iframe이 위를 덮음) -->
+<div id="fallback">그룹웨어를 불러오는 중…<br>
+  화면이 계속 비어 있으면 <a id="direct" href="#" target="_top">여기를 눌러 바로 열기</a></div>
+
+<iframe id="app" title="문화사업국 그룹웨어" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+
+<script>
+  /* ▼ Apps Script '배포 → 웹 앱' 주소(/exec로 끝남)만 바꾸면 됨 */
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbzA2QVYOX5cx84hTS3-sRtQSJHszAWBzKEQV-wz8eB0K22Hv3QB9x1kEnJpGKP-Z67Q/exec';
+
+  // ?page=sponsor 처럼 붙은 주소 파라미터는 그대로 넘겨줌 (협찬 장부 직접 열기 등)
+  var q = location.search || '';
+  var src = APP_URL + q;
+  document.getElementById('app').src = src;
+  document.getElementById('direct').href = src;
+</script>
+</body>
+</html>
